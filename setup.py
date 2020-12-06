@@ -38,10 +38,6 @@
 
 
 import datetime
-from distutils import log
-from distutils.command.build import build
-from distutils.dep_util import newer
-from distutils.spawn import find_executable
 import glob
 from io import StringIO
 import os
@@ -57,6 +53,12 @@ from setuptools import (
 )
 from setuptools.command.install import install as install
 from setuptools.dist import Distribution
+
+# distutils need to be imported after setuptools to avoid unexpected issues
+from distutils import log
+from distutils.command.build import build
+from distutils.dep_util import newer
+from distutils.spawn import find_executable
 
 from picard import (
     PICARD_APP_ID,
