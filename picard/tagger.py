@@ -1273,12 +1273,9 @@ class PicardArgs:
 
     # Add string output for debugging purposes
     def __str__(self):
-        return_string = '{\n'
-        for _attribute in ['config_file', 'debug', 'no_player', 'no_restore', 'no_plugins', 'no_crash_dialog',
-                'stand_alone_instance', 'version', 'processable']:
-            return_string += f"  '{_attribute}': {getattr(self, _attribute, None)}\n"
-        return_string += '}'
-        return return_string
+        attributes = ('config_file', 'debug', 'no_player', 'no_restore', 'no_plugins',
+            'no_crash_dialog', 'stand_alone_instance', 'version', 'processable')
+        return str({a: getattr(self, a, None) for a in attributes})
 
     def __parse_loadable_items(self):
         for x in self._file_or_url:
@@ -1405,10 +1402,11 @@ def main(localedir=None, autoupdate=True):
         return print(picard_args.version)
 
     # any of the flags that change Picard's workflow significantly should trigger creation of a new instance
-    identifier = md5(picard_args.config_file.encode('utf8')).hexdigest() if picard_args.config_file else 'main'
-    identifier += '_NP' if picard_args.no_plugins else ''
     if picard_args.stand_alone_instance:
         identifier = uuid4().hex
+    else:
+        identifier = md5(picard_args.config_file.encode('utf8')).hexdigest() if picard_args.config_file else 'main'
+        identifier += '_NP' if picard_args.no_plugins else ''
 
     if picard_args.processable:
         log.info("Sending messages to main instance: %r", picard_args.processable)
